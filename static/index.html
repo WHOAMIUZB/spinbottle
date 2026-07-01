@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Spin the Bottle 🍾❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<div id="app" class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="hearts-pill" id="heartsPill">
+      <span class="heart-icon">❤️</span>
+      <span id="heartsCount">0</span>
+    </button>
+    <div class="me-badge" id="meBadge">
+      <div class="me-avatar" id="meAvatar">?</div>
+      <div class="me-info">
+        <span id="meName">...</span>
+        <span id="meAge" class="me-age"></span>
+      </div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" title="Sozlamalar">⚙️</button>
+  </header>
+
+  <!-- SIDE RAIL -->
+  <nav class="side-rail">
+    <button class="rail-btn" id="railShop" title="Do'kon"><span>💗</span></button>
+    <button class="rail-btn" id="railWheel" title="Baxt g'ildiragi"><span>🎡</span></button>
+    <button class="rail-btn" id="railFree" title="Bepul hearts"><span>🎁</span></button>
+    <button class="rail-btn" id="railSettings" title="Sozlamalar"><span>☰</span></button>
+    <button class="rail-btn" id="railAdmin" title="Admin panel" style="display:none"><span>🛠️</span></button>
+  </nav>
+
+  <!-- GAME TABLE -->
+  <main class="table-wrap">
+    <div class="table-label" id="roomLabel">Стол —</div>
+    <div class="table-felt" id="tableFelt">
+      <div class="seats" id="seatsRing"></div>
+      <button class="bottle-btn" id="bottleBtn" aria-label="Shishani aylantirish">
+        <svg id="bottleSvg" viewBox="0 0 60 160" class="bottle-svg">
+          <g id="bottleRotor">
+            <path d="M22 8 h16 v22 c10 8 12 18 12 30 v70 a12 12 0 0 1-12 12 H22 a12 12 0 0 1-12-12 V60 c0-12 2-22 12-30 Z"
+                  fill="#37b34a" stroke="#1f7a2c" stroke-width="2"/>
+            <rect x="24" y="4" width="12" height="10" rx="2" fill="#8a5a2b"/>
+            <path d="M17 78 h26 v34 h-26 Z" fill="#ffffff" opacity="0.85"/>
+            <text x="30" y="98" text-anchor="middle" font-size="9" fill="#37b34a" font-weight="700">LOVE</text>
+          </g>
+        </svg>
+      </button>
+      <div class="outcome-banner" id="outcomeBanner"></div>
+    </div>
+  </main>
+
+  <!-- CHAT PANEL -->
+  <section class="chat-panel">
+    <div class="chat-messages" id="chatMessages"></div>
+    <form class="chat-input-row" id="chatForm">
+      <input id="chatInput" type="text" placeholder="Xabar yozish..." autocomplete="off" maxlength="300">
+      <button type="button" class="chat-icon-btn" id="giftPickerBtn">🎁</button>
+      <button type="submit" class="chat-send-btn">➤</button>
+    </form>
+  </section>
+
+  <div class="brand-footer">@spinthe_bot</div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Shop modal -->
+<div class="modal-overlay" id="shopModal">
+  <div class="modal shop-modal">
+    <button class="modal-close" data-close="shopModal">✕</button>
+    <h2 class="modal-title">💗 Sertlarni sotib olish</h2>
+    <div class="shop-top-row">
+      <div class="shop-card feature">
+        <div class="feature-icon">👑</div>
+        <div class="feature-title">VIP<br>STATUS</div>
+        <button class="feature-btn">Bilish</button>
+      </div>
+      <div class="shop-card feature">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Do'st taklif qil<br>+<span id="inviteBonusLabel">20</span> ❤️</div>
+        <button class="feature-btn" id="inviteFriendBtn">Bilish</button>
+      </div>
+      <div class="shop-card feature">
+        <div class="feature-icon">💌</div>
+        <div class="feature-title">Kompliment uchun<br>+<span id="complimentBonusLabel">10</span> ❤️</div>
+        <button class="feature-btn" id="complimentBtn">Bilish</button>
+      </div>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+</div>
+
+<!-- Free hearts modal -->
+<div class="modal-overlay" id="freeModal">
+  <div class="modal free-modal">
+    <button class="modal-close" data-close="freeModal">✕</button>
+    <h2 class="modal-title">Bepul sertlar!</h2>
+    <div class="free-list">
+      <div class="free-row">
+        <span>Do'stlarni o'yinga taklif qilish</span>
+        <button class="free-btn" id="freeInviteBtn">O'tish</button>
+      </div>
+      <div class="free-row">
+        <span>O'yin kanaliga obuna bo'lish</span>
+        <button class="free-btn" id="freeSubBtn">O'tish</button>
+      </div>
+    </div>
+    <button class="claim-btn" id="claimFreeBtn">Olish +<span id="claimAmount">5</span> ❤️</button>
+  </div>
+</div>
+
+<!-- Wheel modal -->
+<div class="modal-overlay" id="wheelModal">
+  <div class="modal wheel-modal">
+    <button class="modal-close" data-close="wheelModal">✕</button>
+    <div class="wheel-header">
+      <span class="heart-icon">❤️</span> "Aylantirish" tugmasini bosing — Baxt g'ildiragini ishga tushiring va yutuqingizni oling!
+    </div>
+    <div class="wheel-chances">Шансы: <span class="chances-badge" id="chancesBadge">🎲 0</span> <button id="chancesPlus" class="chances-plus">+</button></div>
+    <div class="wheel-stage">
+      <div class="wheel-pointer">▼</div>
+      <svg id="wheelSvg" viewBox="0 0 300 300" class="wheel-svg"></svg>
+      <div class="wheel-center">❤️</div>
+    </div>
+    <div class="wheel-price-row">Narxi: <span class="chances-badge">🎲 <span id="wheelCost">1</span></span></div>
+    <button class="spin-wheel-btn" id="spinWheelBtn">Aylantirish</button>
+    <div class="wheel-winner" id="wheelWinnerBanner"></div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal settings-modal">
+    <button class="modal-close" data-close="settingsModal">✕</button>
+    <h2 class="modal-title">Sozlamalar</h2>
+    <div class="settings-row">
+      <span>🔊 Ovozlar</span>
+      <label class="switch"><input type="checkbox" id="soundToggle" checked><span class="slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <span>🎵 Musiqa</span>
+      <label class="switch"><input type="checkbox" id="musicToggle"><span class="slider"></span></label>
+    </div>
+    <div class="settings-row link-row" id="settingsInvite"><span>👥 Do'stlarni taklif qilish</span><span class="chev">›</span></div>
+    <div class="settings-row link-row" id="settingsProfile"><span>🪪 Profil sozlamalari</span><span class="chev">›</span></div>
+    <div class="settings-row link-row" id="settingsContact"><span>💬 Biz bilan bog'lanish</span><span class="chev">›</span></div>
+    <div class="settings-id" id="settingsIdLabel"></div>
+  </div>
+</div>
+
+<!-- Gift picker modal -->
+<div class="modal-overlay" id="giftModal">
+  <div class="modal gift-modal">
+    <button class="modal-close" data-close="giftModal">✕</button>
+    <h2 class="modal-title">Kimga yubormoqchisiz?</h2>
+    <div class="target-row" id="targetRow"></div>
+    <h2 class="modal-title small">Sovg'a tanlang</h2>
+    <div class="gift-grid" id="giftGrid"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>
