@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin panel — Spin the Bottle</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/admin.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🛠️🍾</div>
+    <h1>Admin panel</h1>
+    <p>Spin the Bottle o'yinini boshqarish</p>
+    <input id="secretInput" type="password" placeholder="Admin maxfiy parol">
+    <button id="loginBtn">Kirish</button>
+    <div id="loginError" class="login-error"></div>
+    <p class="hint">Telegram ichida admin akkaunt bilan ochilgan bo'lsa, avtomatik kirasiz.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="adminApp" class="admin-app" style="display:none">
+
+  <aside class="admin-sidebar">
+    <div class="admin-brand">🍾 Admin</div>
+    <nav>
+      <button class="nav-item active" data-tab="dashboard">📊 Statistika</button>
+      <button class="nav-item" data-tab="users">👥 Foydalanuvchilar</button>
+      <button class="nav-item" data-tab="reactions">🎁 Reaksiyalar</button>
+      <button class="nav-item" data-tab="wheel">🎡 Baxt g'ildiragi</button>
+      <button class="nav-item" data-tab="shop">💗 Do'kon</button>
+      <button class="nav-item" data-tab="rooms">🪑 Xonalar</button>
+      <button class="nav-item" data-tab="broadcast">📢 Xabar yuborish</button>
+      <button class="nav-item" data-tab="settings">⚙️ Sozlamalar</button>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <section class="tab-panel active" id="tab-dashboard">
+      <h2>Statistika</h2>
+      <div class="stat-grid" id="statGrid"></div>
+      <h3>So'nggi tranzaksiyalar</h3>
+      <div class="table-wrap-a">
+        <table id="txTable"><thead><tr><th>ID</th><th>Foydalanuvchi</th><th>Turi</th><th>Miqdor</th><th>Izoh</th><th>Vaqt</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- USERS -->
+    <section class="tab-panel" id="tab-users">
+      <h2>Foydalanuvchilar</h2>
+      <div class="toolbar"><input id="userSearch" placeholder="ID, ism yoki username bo'yicha qidirish..."></div>
+      <div class="table-wrap-a">
+        <table id="usersTable">
+          <thead><tr><th>ID</th><th>Ism</th><th>Username</th><th>❤️</th><th>🎲</th><th>VIP</th><th>Bloklangan</th><th>Amallar</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REACTIONS -->
+    <section class="tab-panel" id="tab-reactions">
+      <h2>Reaksiyalar (sovg'alar)</h2>
+      <p class="sub">Yangi reaksiya qo'shing va har biri uchun narx (yuboruvchidan) va ball (qabul qiluvchiga) belgilang.</p>
+      <form class="inline-form" id="reactionForm">
+        <input name="emoji" placeholder="Emoji (masalan 🎉)" required maxlength="4" style="width:90px">
+        <input name="name" placeholder="Nomi" required>
+        <input name="cost" type="number" placeholder="Narxi (❤️)" required min="0" style="width:110px">
+        <input name="points" type="number" placeholder="Ball (qabul qiluvchiga)" required min="0" style="width:160px">
+        <button type="submit">+ Qo'shish</button>
+      </form>
+      <div class="table-wrap-a">
+        <table id="reactionsTable">
+          <thead><tr><th>Emoji</th><th>Nomi</th><th>Narxi</th><th>Ball</th><th>Faol</th><th>Amallar</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- WHEEL -->
+    <section class="tab-panel" id="tab-wheel">
+      <h2>Baxt g'ildiragi sovg'alari</h2>
+      <p class="sub">Har bir bo'lim uchun mukofot miqdori va tushish ehtimolini (og'irlik) belgilang. Katta og'irlik — ko'proq tushadi.</p>
+      <form class="inline-form" id="wheelForm">
+        <input name="label" placeholder="Yorliq (masalan 100)" required style="width:120px">
+        <input name="hearts_reward" type="number" placeholder="Mukofot (❤️)" required style="width:130px">
+        <input name="weight" type="number" placeholder="Ehtimollik (og'irlik)" required value="10" style="width:150px">
+        <input name="icon" placeholder="Ikonka (❤️/⭐/🏆)" value="❤️" style="width:120px">
+        <input name="color" type="color" value="#2ecc71" style="width:50px;padding:2px">
+        <button type="submit">+ Qo'shish</button>
+      </form>
+      <div class="table-wrap-a">
+        <table id="wheelTable">
+          <thead><tr><th>Ikonka</th><th>Yorliq</th><th>Mukofot</th><th>Og'irlik</th><th>Rang</th><th>Faol</th><th>Amallar</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SHOP -->
+    <section class="tab-panel" id="tab-shop">
+      <h2>Do'kon paketlari</h2>
+      <p class="sub">Hearts paketlari va ularning Telegram Stars narxini boshqaring.</p>
+      <form class="inline-form" id="shopForm">
+        <input name="hearts_amount" type="number" placeholder="Hearts miqdori" required style="width:140px">
+        <input name="stars_price" type="number" placeholder="Narx (⭐)" required style="width:120px">
+        <input name="bonus_percent" type="number" placeholder="Bonus %" value="0" style="width:100px">
+        <input name="badge" placeholder="Belgi (Хит/Выгодно)" style="width:160px">
+        <input name="sort_order" type="number" placeholder="Tartib" value="0" style="width:90px">
+        <button type="submit">+ Qo'shish</button>
+      </form>
+      <div class="table-wrap-a">
+        <table id="shopTable">
+          <thead><tr><th>Hearts</th><th>Narx ⭐</th><th>Bonus</th><th>Belgi</th><th>Tartib</th><th>Faol</th><th>Amallar</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ROOMS -->
+    <section class="tab-panel" id="tab-rooms">
+      <h2>Xonalar / stollar</h2>
+      <form class="inline-form" id="roomForm">
+        <input name="name" placeholder="Xona nomi (masalan Стол 205)" required>
+        <input name="seats" type="number" placeholder="O'rinlar soni" value="8" required style="width:140px">
+        <button type="submit">+ Qo'shish</button>
+      </form>
+      <div class="table-wrap-a">
+        <table id="roomsTable"><thead><tr><th>ID</th><th>Nomi</th><th>O'rinlar</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- BROADCAST -->
+    <section class="tab-panel" id="tab-broadcast">
+      <h2>Ommaviy xabar yuborish</h2>
+      <p class="sub">Barcha ro'yxatdan o'tgan foydalanuvchilarga botdan xabar yuboriladi.</p>
+      <textarea id="broadcastText" rows="6" placeholder="Xabar matnini kiriting..."></textarea>
+      <button id="broadcastBtn" class="primary-btn">📢 Yuborish</button>
+      <div id="broadcastResult" class="sub"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="tab-panel" id="tab-settings">
+      <h2>Umumiy sozlamalar</h2>
+      <div class="settings-grid" id="settingsGrid"></div>
+      <button id="saveSettingsBtn" class="primary-btn">💾 Saqlash</button>
+    </section>
+
+  </main>
+</div>
+
+<div id="adminToast" class="admin-toast"></div>
+
+<script src="/assets/js/admin.js"></script>
+</body>
+</html>
