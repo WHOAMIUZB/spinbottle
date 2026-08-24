@@ -1,6 +1,0 @@
-aiogram==3.4.1
-aiosqlite==0.22.1
-python-dotenv==1.0.0
-aiohttp==3.9.1
-
-# asyncio o'chirib tashlandim (Python built-in!)
