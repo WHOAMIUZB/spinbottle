@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: smm-master-bot
+    env: python
+    pythonVersion: 3.11.9
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: MASTER_BOT_TOKEN
+        value: 8703682072:AAFXt3dYiUabWXoopN6dmu7YQflZt2mYtRg
+      - key: ADMIN_ID
+        value: "7861165622"
+      - key: PYTHON_VERSION
+        value: "3.11.9"

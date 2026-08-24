@@ -1,0 +1,7 @@
+aiogram==3.4.1
+aiosqlite==0.22.1
+python-dotenv==1.0.0
+aiohttp==3.9.1
+pydantic==2.5.0
+pydantic-core==2.14.1
+typing-extensions==4.8.0
